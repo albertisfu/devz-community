@@ -32,7 +32,7 @@ def is_palindrome(string):
         left = string[-i-1]
 
         try:
-            #search for accents characters inside special hash and replace with no accented character
+            #search for accented characters stored in "special" hash, if found replace with no accented character
             right = special[right]
             left = special[left]
         except KeyError:
