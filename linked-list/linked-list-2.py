@@ -172,6 +172,8 @@ def sum_linked(list1, list2):
     
     
     return new_list
+    # BigO O(A+B) ya que ambas listas son completamente recorridas
+
 
 
 
