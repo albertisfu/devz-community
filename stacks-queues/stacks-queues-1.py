@@ -74,7 +74,7 @@ class CustomStack:
         last_value_stack = self.base_stack.peek()
         #check is base stack is not empty
         if last_value_stack != None:
-            #check if new value is < last_value_stack, if then add pushed value to stack
+            #check if new value is < last_value_stack, if true then add pushed value to stack
             if new_node.data < last_value_stack:
                 self.base_stack.push(new_node.data)
             else:
@@ -107,11 +107,11 @@ class CustomStack:
             last_value_stack = self.base_stack.peek()
             #check is base stack is not empty
             if last_value_stack != None:
-                #check if extracted value is on top of base stack, if then extract the value from base_stack
+                #check if extracted value is on top of base stack, if true then extract the value from base_stack
                 if last_node.data == last_value_stack:
                     self.base_stack.pop()
                 else:
-                    #if not then, extract last value of base stack, confirm is the value extracted is now in top of base stack, if yes then extract it
+                    #if false then, extract last value of base stack, confirm is the value extracted is now in top of base stack, if yes then extract it
                     self.base_stack.pop()
                     if last_node.data == self.base_stack.peek():
                         self.base_stack.pop()
