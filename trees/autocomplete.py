@@ -4,41 +4,35 @@ class Node:
 		self.is_terminal = False
 		self.branches = None
 
-
 class Autocomplete:
 	def __init__(self):
 		self.root = None
 
 	def built(self, strings):
+
 		for string in strings:
-
-			parent_node = None  #initialize at the begining of new string
-
+			parent_node = None  #initialize parent_node as None on every string to built
 			for char in string:
-				
 				#with each new string start building from root
 				if parent_node == None:
-					#C
-					#C
-					#created root and refer new node C
+					#create root node if not exist
 					if self.root == None:
 						parent_node = Node(None) #create root node
 						parent_node.branches = {} #initialize hash
 						self.root = parent_node
 
-						#temp_node = new_node
 					else:
-						parent_node = self.root #refer to root node
-				
+						#refer to root node
+						parent_node = self.root 
+					#check if the next char to add is now within parent node branches
 					next_node = parent_node.branches.get(char, False)
-
 					if next_node == False:
-						#do not exist that branch in root node
+						#if do not exist that branch in root node, create
 						next_node = Node(char)
 						next_node.branches = {}
 						#assign new node as a branch of root node
 						parent_node.branches[char] = next_node
-					
+					#refer parent_node to next_node
 					parent_node = next_node
 				
 				#for following characters start from last node
@@ -55,37 +49,42 @@ class Autocomplete:
 			
 					parent_node = next_node
 			
-			#mark as terminal node
+			#mark as terminal node if is the last node of string
 			next_node.is_terminal = True
 	
 
+
+		
+	
+	def get_next(self, string):
+		parent_node = self.root
+		if parent_node.branches != {}:
+
+			#reach the last node of string following the keys
+			for char in string:
+				parent_node = parent_node.branches[char]
+			
+			#print last level keys
+			for key in parent_node.branches:
+				print(key, end=', ')
+
+
+	
 	def print_valid(self, node):
 		
 		if node == None:
 			node = self.root
 		
+		#print value of terminal node
 		if node.is_terminal == True:
 			print(node.value)
 		
 		if node.branches == {}:
 			return None
 		
+		#recursive function to reach the full path of a node
 		for key in node.branches:
 			self.print_valid(node.branches[key])
-		
-	
-	def get_next(self, string):
-
-		parent_node = self.root
-
-		if parent_node.branches != {}:
-
-			for char in string:
-				parent_node = parent_node.branches[char]
-			
-
-			for key in parent_node.branches:
-				print(key, end=', ')
 
 	
 	def get_autocomplete(self, string):
@@ -94,12 +93,13 @@ class Autocomplete:
 
 		if parent_node.branches != {}:
 
+			#reach the last node of string following the keys
 			for char in string:
 				parent_node = parent_node.branches[char]
-				#get lastes node
+
 			
 			for key in parent_node.branches:
-				#print(key, end='- ')
+				#acces to recursive function to reach the full path of a node
 				self.print_valid(parent_node.branches[key])
 
 
@@ -107,14 +107,16 @@ class Autocomplete:
 
 
 
-
-	
-
-
-
-
 instance = Autocomplete()
-instance.built(['car', 'cat', 'cayo', 'cayopar', 'bus'])
 
-#instance.get_next('ca')
-instance.get_autocomplete('c')
+strings = ['car', 'cartier','cat', 'catamaran', 'bus', 'mouse']
+print('Cadenas: ', strings)
+instance.built(strings)
+
+characters = 'ca'
+print('Next nodes  of: ', characters )
+
+instance.get_next(characters)
+print('\n')
+print('Autocomplete of: ',characters )
+instance.get_autocomplete(characters)
