@@ -7,37 +7,37 @@ class Node:
 class HrChart:
 	def __init__(self):
 		self.root = None
+		self.nodes = {}
     
 
 	def built(self, tuplas):
-		nodos = {}
 		for tupla in tuplas:
 			em_id = tupla[0]
 			#print('em_id: ', em_id)
-			employee = nodos.get(em_id, False)
+			employee = self.nodes.get(em_id, False)
 			if employee == False:
 				#print('create em')
 				employee= Node(em_id)
 				employee.branches = {}
-				nodos[em_id] = employee
+				self.nodes[em_id] = employee
 			employee.is_ceo = False
 
 			ma_id = tupla[1]
 			#print('ma_id: ', ma_id)
-			manager = nodos.get(ma_id, False)
+			manager = self.nodes.get(ma_id, False)
 			if manager == False:
 				#print('create ma')
 				manager = Node(ma_id)
 				manager.branches = {}
-				nodos[ma_id] = manager
+				self.nodes[ma_id] = manager
 
 			manager.branches[em_id] = employee
 
 		#asign CEO
-		for key in nodos:
-			if nodos[key].is_ceo == True:
-				print('ceo: ', key)
-				self.root = nodos[key]
+		for key in self.nodes:
+			if self.nodes[key].is_ceo == True:
+				print('CEO: ', key)
+				self.root = self.nodes[key]
 
 	
 
@@ -59,33 +59,17 @@ class HrChart:
 			self.print_branches(node.branches[key])
 	
 
-	def is_manager1(self, node, manager_id, employee_id, flag):
+	def is_manager(self,manager_id, employee_id):
+		manager_node = self.nodes[manager_id]
 
-		flag = flag
-		if node == None:
-			node = self.root
-		
-		if node.value == manager_id:
-			print('manager_id: ', node.value )
-			for key in node.branches:
-				print('key: ', key)
-				print('emplooye_id: ', employee_id)
-				if node.branches[key].value == employee_id:
-					print('entro true')
-					flag = True
-					break
-				
+		report_to = manager_node.branches.get(employee_id, False)
+
+		if report_to != False:
+			return True
 		else:
-			for key in node.branches:
-				print('entro recursivo')
-				self.is_manager1(node.branches[key], manager_id, employee_id, flag)
+			return False
 
-			
-		if node.branches == {}:
-			print('---- flag')
-			return flag
-		
-		return flag
+
 
 
 
@@ -102,5 +86,9 @@ instance.built(tuplas)
 
 #instance.print_branches(None)
 
-result = instance.is_manager1(None, 7, 4, False)
-print('Is manger: ', result)
+print('---------')
+employee1 = 5
+employee2 = 2
+print('Empleado: ', employee1)
+print('Reporta a: ', employee2, '?')
+print(instance.is_manager(employee1,employee2))
