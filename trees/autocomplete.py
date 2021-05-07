@@ -58,19 +58,6 @@ class Autocomplete:
 			#mark as terminal node
 			next_node.is_terminal = True
 	
-	def print_branches(self, node):
-
-		if node == None:
-			node = self.root
-		
-		if node.branches == {}:
-			print('----')
-			return None
-		
-		for key in node.branches:
-			print(node.branches[key].value + ' - ' + str(node.branches[key].is_terminal) )
-			self.print_branches(node.branches[key])
-	
 
 	def print_valid(self, node):
 		
@@ -131,4 +118,3 @@ instance.built(['car', 'cat', 'cayo', 'cayopar', 'bus'])
 
 #instance.get_next('ca')
 instance.get_autocomplete('c')
-#instance.print_branches(None)
