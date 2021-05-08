@@ -8,6 +8,8 @@ class HrChart:
 	def __init__(self):
 		self.root = None
 		self.nodes = {}
+		self.is_in_chain = False
+		self.list_sub_employees = []
     
 
 	def built(self, tuplas):
@@ -47,14 +49,11 @@ class HrChart:
 			node = self.root
 			print(node.value)
 
-		#print('ceso orint:', node.value)	
-
 		if node.branches == {}:
 			print('----')
 			return None
 
 		for key in node.branches:
-			#print('entro aqui')
 			print(node.branches[key].value)
 			self.print_branches(node.branches[key])
 	
@@ -72,9 +71,43 @@ class HrChart:
 
 
 
+	def is_in_management_chain(self, node, manager_id, employee_id):
+		if node == None:
+			node = self.root
+			manager_node = self.nodes[manager_id]
+		else:
+			manager_node = node
+		
+		if node.branches == {}:
+			return
+
+		for key in manager_node.branches:
+			if manager_node.branches[key].value == employee_id:
+				self.is_in_chain = True
+				return 
+
+		for key in manager_node.branches:
+			self.is_in_management_chain(manager_node.branches[key], manager_id, employee_id)
+	
+
+
+	def get_sub_employees(self, node, manager_id):
+		if node == None:
+			node = self.root
+			manager_node = self.nodes[manager_id]
+		else:
+			manager_node = node
+		
+		if node.branches == {}:
+			return
+
+		for key in manager_node.branches:
+			self.list_sub_employees.append(key)
+			self.get_sub_employees(manager_node.branches[key], manager_id)
 
 
 		
+	
 
 
 	
@@ -84,11 +117,25 @@ tuplas = [[4,7],[1,5],[5,3],[7,3],[6,3],[2,5]]
 instance = HrChart()
 instance.built(tuplas)
 
-#instance.print_branches(None)
 
 print('---------')
 employee1 = 5
 employee2 = 2
-print('Empleado: ', employee1)
-print('Reporta a: ', employee2, '?')
+print('Empleado: ', employee2)
+print('Reporta a: ', employee1, '?')
 print(instance.is_manager(employee1,employee2))
+
+print('---------')
+employee1 = 5
+employee2 = 4
+print('Empleado: ', employee2)
+print('Reporta directo o indirecto a: ', employee1, '?')
+instance.is_in_management_chain(None, employee1,employee2)
+print(instance.is_in_chain)
+
+
+print('---------')
+employee1 = 3
+print('Sub Empleados de: ', employee1)
+instance.get_sub_employees(None, employee1)
+print(instance.list_sub_employees)
