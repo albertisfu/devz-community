@@ -12,27 +12,28 @@ class HrChart:
 		self.list_sub_employees = []
     
 
+	#assembly of employees tree
 	def built(self, tuplas):
 		for tupla in tuplas:
+			#check if exist or create employee node
 			em_id = tupla[0]
-			#print('em_id: ', em_id)
 			employee = self.nodes.get(em_id, False)
 			if employee == False:
-				#print('create em')
 				employee= Node(em_id)
 				employee.branches = {}
 				self.nodes[em_id] = employee
+			#if one id is in somepoint an employee can't be the CEO, by default True
 			employee.is_ceo = False
 
+			#check if exist or create manager node
 			ma_id = tupla[1]
-			#print('ma_id: ', ma_id)
 			manager = self.nodes.get(ma_id, False)
 			if manager == False:
-				#print('create ma')
 				manager = Node(ma_id)
 				manager.branches = {}
 				self.nodes[ma_id] = manager
 
+			#assign employee to manager branches
 			manager.branches[em_id] = employee
 
 		#asign CEO
@@ -43,26 +44,12 @@ class HrChart:
 
 	
 
-	def print_branches(self, node):
-
-		if node == None:
-			node = self.root
-			print(node.value)
-
-		if node.branches == {}:
-			print('----')
-			return None
-
-		for key in node.branches:
-			print(node.branches[key].value)
-			self.print_branches(node.branches[key])
-	
-
 	def is_manager(self,manager_id, employee_id):
+		#find for manager inside nodes of tree
 		manager_node = self.nodes[manager_id]
-
 		report_to = manager_node.branches.get(employee_id, False)
 
+		#if employee id is within manager branches, return True
 		if report_to != False:
 			return True
 		else:
@@ -70,10 +57,10 @@ class HrChart:
 
 
 
-
 	def is_in_management_chain(self, node, manager_id, employee_id):
 		if node == None:
 			node = self.root
+			#start from manager node (parent node of interest), to avoid transverse the full tree if possible
 			manager_node = self.nodes[manager_id]
 		else:
 			manager_node = node
@@ -81,11 +68,14 @@ class HrChart:
 		if node.branches == {}:
 			return
 
+		#check within branches node if is employee id
 		for key in manager_node.branches:
 			if manager_node.branches[key].value == employee_id:
+				#assign is_in_chain flag to True
 				self.is_in_chain = True
 				return 
 
+		#find recursively for employee id  in leaf nodes
 		for key in manager_node.branches:
 			self.is_in_management_chain(manager_node.branches[key], manager_id, employee_id)
 	
@@ -94,6 +84,7 @@ class HrChart:
 	def get_sub_employees(self, node, manager_id):
 		if node == None:
 			node = self.root
+			#start from manager node (parent node of interest), to avoid transverse the full tree if possible
 			manager_node = self.nodes[manager_id]
 		else:
 			manager_node = node
@@ -101,6 +92,7 @@ class HrChart:
 		if node.branches == {}:
 			return
 
+		#transverse recursively tree from manager_id node to their leafs and append to get_sub_employees list
 		for key in manager_node.branches:
 			self.list_sub_employees.append(key)
 			self.get_sub_employees(manager_node.branches[key], manager_id)
